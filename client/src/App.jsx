@@ -73,7 +73,7 @@ export default function App() {
    
         (async ()=>{
           try{
-            const data=await (await fetch("http://localhost:8010/questions")).json();
+            const data=await (await fetch("https://quiz-mkbh.onrender.com/")).json();
             dispatch({type:"dataReceived",payload:data})
      //       console.log(await state);
             
