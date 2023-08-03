@@ -4,7 +4,16 @@
   padding: 2rem;
   text-align: center;
 }
-
+.next{
+  float:right;;
+}
+.timer{
+  box-shadow: 0 0 1px 0 #DFDFDF;
+  border-radius: 20px 20px 20px 20px;
+  float:left;
+  padding:0.7rem;
+  margin-top: 1rem;
+}
 .logo {
   height: 6em;
   padding: 1.5em;

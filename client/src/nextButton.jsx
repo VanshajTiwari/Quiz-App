@@ -1,7 +1,7 @@
 export default function NextButton({dispatch,answer,index,length}){
-    console.log(index,length)
     if(answer===null)return null;
     return(
-        <button style={{margin:"1rem"}} onClick={()=>{index!==length-1?dispatch({type:"nextQuestion"}):dispatch({type:"finished"})}}>Next</button>
-    )
+        index!==length-1?<button className="next" style={{margin:"1rem"}} onClick={()=>{dispatch({type:"nextQuestion"})}}>Next</button>:<button className="next" style={{margin:"1rem"}} onClick={()=>{dispatch({type:"finished"})}}>finish</button>
+        
+        )
 }

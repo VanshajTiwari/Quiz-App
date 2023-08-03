@@ -11,14 +11,17 @@ import Question from './Question';
 import NextButton from './nextButton'
 import Progress from './progress'
 import FinishScreen from './FinishScreen'
+import Timer from './Timer'
 
-console.log(fetch("../src/data/questions.json").then(res=>console.log(res)));
+
 const initialState={question:[],
   //'loading,error,ready,active,finished"
   status:"loading",
   answer:null,
   points:0,
-  index:0
+  index:0,
+  highScore:0,
+  secondsRemaining:null,
 }
 
 function reducer(state,action){
@@ -38,8 +41,14 @@ function reducer(state,action){
     case 'start':
       return{
         ...state,
-        status:"active"
+        status:"active",
+        secondsRemaining:state.questions.length*20
       }
+    case 'tick':
+      return{
+        ...state,secondsRemaining:state.secondsRemaining-1,
+        status:state.secondsRemaining<=0?'finished':state.status
+      };
     case 'newanswer':
       const question=state.questions[state.index];
       return{
@@ -56,8 +65,18 @@ function reducer(state,action){
     case "finished":
       return{
         ...state,
-        status:"finished"
-
+        status:"finished",
+        highScore:state.highScore>state.points?state.highScore:state.points
+        
+      }
+    case "restart":
+      return{
+        ...state,
+        status:"ready",
+        answer:null,
+        index:0,
+        points:0,
+        highScore:state.highScore,
       }
     default:
       throw new Error("Action Unknown");
@@ -73,8 +92,8 @@ export default function App() {
    
         (async ()=>{
           try{
-            const data=await (await fetch("http://localhost:8010/questions")).json();
-            dispatch({type:"dataReceived",payload:data})
+            const data=await (await fetch("http://localhost:8000/")).json();
+            dispatch({type:"dataReceived",payload:data.data.questions})
      //       console.log(await state);
             
  
@@ -88,7 +107,7 @@ export default function App() {
        
           },[])
    
-          console.log(state.status);
+  
   return (
     <div>
       <Header/>
@@ -96,12 +115,16 @@ export default function App() {
             {state.status==='loading' && <Loading/>}
             {state.status==="ready" && <div>
                 <StartScreen dispatch={dispatch} length={state.questions.length}/>
-              </div>}
+               </div>}
               {state.status==="Error" && <Error/>}
-              {state.status==="finished" && <div><FinishScreen points={state.points} maxPoints={maxPoints}/></div>}
+              {state.status==="finished" && <div><FinishScreen dispatch={dispatch}  Score={state.highScore} points={state.points} maxPoints={maxPoints}/>
+              
+              </div>}
               {state.status==="active" && <>
               <Progress points={state.points} maxPoint={maxPoints} questions={state.questions.length} index={state.index} answer={state.answer}/>
               <Question question={state.questions[state.index]} dispatch={dispatch} answer={state.answer}/>
+              <Timer dispatch={dispatch} secondsRemaining={state.secondsRemaining}/>
+              
               <NextButton dispatch={dispatch} answer={state.answer} length={state.questions.length} index={state.index}/>
               </>}
               
