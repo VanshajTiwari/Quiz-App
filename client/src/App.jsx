@@ -92,8 +92,8 @@ export default function App() {
    
         (async ()=>{
           try{
-            const data=await (await fetch("http://localhost:8000/")).json();
-            dispatch({type:"dataReceived",payload:data.data.questions})
+            const data=await (await fetch("http://localhost:8010/questions")).json();
+            dispatch({type:"dataReceived",payload:data})
      //       console.log(await state);
             
  
